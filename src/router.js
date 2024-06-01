@@ -1,30 +1,34 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import DefaultLayout from './layouts/Default.vue'
-import Home from './views/Home.vue'
-import About from './views/About.vue'
+
+import IndexPage from '@/components/IndexPage.vue'
 
 const routes = [
-  {
-    path: '/',
-    component: DefaultLayout,
-    children: [
-      {
-        path: '',
-        name: 'home',
-        component: Home
-      },
-      {
-        path: '/about',
-        name: 'about',
-        component: About
-      }
-    ]
-  }
+    {
+        path: '/',
+        component: IndexPage,
+        /*children: [
+            {
+                path: 'profissionais/:tipo',
+                name: 'profissionais',
+                props: true,
+                components: {
+                    profissionais: ListaItens
+                }
+            },
+            {
+                path: 'equipamentos/:tipo',
+                name: 'equipamentos',
+                props: true,
+                components: {
+                    equipamentos: ListaItens
+                }
+            }
+        ]*/
+    }
 ]
-
 const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL),
-  routes
+    history: createWebHistory(),
+    routes
 })
 
 export default router
