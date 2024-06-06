@@ -3,6 +3,7 @@
     <q-banner rounded :class="$q.dark.isActive ? 'bg-grey-9' : 'bg-grey-2'">
       <nav>
         <router-link to="/">Home</router-link> |
+        <router-link to="/">Histórias Capitulo</router-link> |
         <router-link to="/about">About</router-link>
       </nav>
       <template v-slot:avatar>
@@ -28,7 +29,10 @@
 export default {
   name: 'BannerComponent',
   props: {
-    bannerText: String
+    bannerText:{
+      type: String,
+      required: true
+    }
   }
 }
 </script>

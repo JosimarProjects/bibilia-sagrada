@@ -6,7 +6,6 @@
           <div>A Palavra de Deus</div>
         </template>
       </BannerComponent>
-    <h1>testando</h1>
   </div>
 </template>
 

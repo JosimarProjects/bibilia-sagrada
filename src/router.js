@@ -1,11 +1,13 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
 import IndexPage from '@/components/IndexPage.vue'
+import VersiculoAleatorio from "@/components/VersiculoAleatorio.vue";
+import ProcurarCapituloEVersiculo from "@/components/ProcurarCapituloEVersiculo.vue";
 
 const routes = [
     {
         path: '/',
-        component: IndexPage,
+        component: ProcurarCapituloEVersiculo,
         /*children: [
             {
                 path: 'profissionais/:tipo',
@@ -24,7 +26,12 @@ const routes = [
                 }
             }
         ]*/
+    },
+    {
+        path: '/versiculo-aleatorio',
+        component: VersiculoAleatorio
     }
+
 ]
 const router = createRouter({
     history: createWebHistory(),
