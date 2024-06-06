@@ -13,30 +13,30 @@
       <br>
       <p>{{ versiculo.text }}</p>
       <br>
-      <img v-if="versiculo.image !== '' && !loadingImage" :src="versiculo.image" alt="Imagem do versículo" width="500"
+      <img v-if="versiculo.image !== '' && !loadingImage && this.openAiToken !== ''" :src="versiculo.image" alt="Imagem do versículo" width="500"
            height="500">
-      <div v-if="loadingImage">
+      <div v-if="loadingImage && this.openAiToken !== ''">
         <q-spinner size="50px"/>
       </div>
     </div>
     <br><br>
 
-    <div>
+    <div  class="configured-label animate__animated animate__bounceIn">
       <q-btn
           color="primary"
-          label="Buscar"
+          label="Buscar Versículo Aleatório"
           @click="addRandonVersiculo"
       />
     </div>
     <br>
-    <div class="input-container">
+    <div v-if="showInput" ref="inputContainer" class="input-container animate__animated" :class="animationClass">
       <q-input
           dense
           outlined
           label="Para vê imagens dos versiculos, insira o token do OpenAI:"
           type="string"
           v-model="openAiToken"
-          class="input-field"
+          class="input-field configured-label"
       >
         <template v-slot:append>
           <q-btn @click="setImageToken" label="Enviar" class="send-button"/>
@@ -48,8 +48,8 @@
 
 <script>
 import IndexPage from "@/components/IndexPage.vue";
-import {mapActions, mapMutations, mapState} from "vuex";
-import {QSpinner} from 'quasar';
+import { mapActions, mapMutations, mapState } from "vuex";
+import { QSpinner } from 'quasar';
 
 export default {
   name: 'VersiculoAleatorio',
@@ -62,6 +62,8 @@ export default {
       loading: false,
       loadingImage: false,
       openAiToken: '',
+      showInput: true,
+      animationClass: 'animate__bounceIn', // Classe de animação inicial
     };
   },
   computed: {
@@ -90,7 +92,21 @@ export default {
     },
     setImageToken() {
       this.setOpenAiToken(this.openAiToken);
+      this.animateOut();
     },
+    animateOut() {
+      this.animationClass = 'animate__bounceOut'; // Classe de saída
+      this.$refs.inputContainer.addEventListener('animationend', () => {
+        this.showInput = false;
+      }, {once: true});
+    },
+    toggleInput() {
+      if (this.showInput) {
+        this.animationClass = 'animate__bounceIn'; // Classe de entrada
+      } else {
+        this.animationClass = 'animate__bounceOut'; // Classe de saída
+      }
+    }
   },
   watch: {
     versiculo: {
@@ -158,6 +174,4 @@ export default {
 .send-button {
   margin-left: 10px;
 }
-
-
 </style>
