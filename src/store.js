@@ -49,7 +49,7 @@ export default new Vuex.Store({
                     context.commit('setVersiculoBook', dados.book.name);
                     context.commit('setVersiculoChapter', dados.chapter);
                     context.commit('setVersiculoNumber', dados.number);
-                    context.dispatch('fetchImage');
+                  //  context.dispatch('fetchImage');
 
                 })
                 .catch(error => {
@@ -80,7 +80,6 @@ export default new Vuex.Store({
                         throw new Error(`Erro na requisição: ${response.statusText}`);
                     }
                     const dados = await response.json();
-                    console.log('IMAGE', dados);
                     context.commit('setImage', dados.data[0].url);
                 })
                 .catch(error => {

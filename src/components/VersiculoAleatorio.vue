@@ -20,7 +20,6 @@
       </div>
     </div>
     <br><br>
-
     <div  class="configured-label animate__animated animate__bounceIn">
       <q-btn
           color="primary"
@@ -29,17 +28,17 @@
       />
     </div>
     <br>
-    <div v-if="showInput" ref="inputContainer" class="input-container animate__animated" :class="animationClass">
+    <div v-if="showInput" ref="inputContainer" class="input-container " :class="animationClass">
       <q-input
           dense
           outlined
           label="Para vê imagens dos versiculos, insira o token do OpenAI:"
           type="string"
-          v-model="openAiToken"
+          v-model="openAiTokenInput"
           class="input-field configured-label"
       >
         <template v-slot:append>
-          <q-btn @click="setImageToken" label="Enviar" class="send-button"/>
+          <q-btn @click="setImageToken(openAiTokenInput) " color="primary" label="Enviar"/>
         </template>
       </q-input>
     </div>
@@ -61,7 +60,7 @@ export default {
     return {
       loading: false,
       loadingImage: false,
-      openAiToken: '',
+      openAiTokenInput: '',
       showInput: true,
       animationClass: 'animate__bounceIn', // Classe de animação inicial
     };
@@ -84,14 +83,17 @@ export default {
     },
     addRandonVersiculo() {
       this.loading = true;
-      this.loadingImage = true;
       this.buscarVersiculo();
+      if (this.openAiToken !== '') {
+        this.loadingImage = true;
+        this.getImage();
+      }
     },
     async getImage() {
       await this.fetchImage();
     },
-    setImageToken() {
-      this.setOpenAiToken(this.openAiToken);
+    setImageToken(value) {
+      this.setOpenAiToken(value);
       this.animateOut();
     },
     animateOut() {
