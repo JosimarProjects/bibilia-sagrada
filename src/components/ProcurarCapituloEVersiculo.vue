@@ -1,4 +1,4 @@
-<template xmlns:q-card-section="http://www.w3.org/1999/html">
+<template>
   <div>
     <IndexPage></IndexPage>
     <div>
@@ -34,13 +34,13 @@
                 dense
             ></q-select>
           </div>
-         <q-card-section>
-           <div>
-             <h1>rtte</h1>
-           </div>
-         </q-card-section>
+          <q-card-section>
+            <div>
+              <h1>rtte</h1>
+            </div>
+          </q-card-section>
           <br><br>
-          <div  class="configured-label animate__animated animate__bounceIn">
+          <div class="configured-label animate__animated animate__bounceIn">
             <q-btn
                 color="primary"
                 label="Buscar Versículo Aleatório"
@@ -51,81 +51,38 @@
       </q-card>
     </div>
   </div>
-
 </template>
 
 <script>
 import IndexPage from "@/components/IndexPage.vue";
-import {mapActions, mapState} from "vuex";
+import { mapActions, mapState } from "vuex";
 
 export default {
   name: 'ProcurarCapituloEVersiculo',
   components: {
-    IndexPage
+    IndexPage,
   },
   data() {
     return {
-      versiculo: [
-        {label: 'Gênesis', value: 'genesis'},
-        {label: 'Êxodo', value: 'exodo'},
-        {label: 'Levítico', value: 'levitico'},
-        {label: 'Números', value: 'numeros'},
-        {label: 'Deuteronômio', value: 'deuteronomio'},
-        {label: 'Josué', value: 'josue'},
-        {label: 'Juízes', value: 'juizes'},
-        {label: 'Rute', value: 'rute'},
-        {label: '1 Samuel', value: '1samuel'},
-        {label: '2 Samuel', value: '2samuel'},
-        {label: '1 Reis', value: '1reis'},
-        {label: '2 Reis', value: '2reis'},
-        {label: '1 Crônicas', value: '1cronicas'},
-        {label: '2 Crônicas', value: '2cronicas'},
-        {label: 'Esdras', value: 'esdras'},
-        {label: 'Neemias', value: 'neemias'},
-        {label: 'Ester', value: 'ester'},
-        {label: 'Jó', value: 'jo'},
-        {label: 'Salmos', value: 'salmos'},
-        {label: 'Provérbios', value: 'proverbios'},
-        {label: 'Eclesiastes', value: 'eclesiastes'},
-        {label: 'Cânticos', value: 'canticos'},
-        {label: 'Isaías', value: 'isaias'},
-        {label: 'Jeremias', value: 'jeremias'},
-        {label: 'Lamentações', value: 'lamentacoes'},
-        {label: 'Ezequiel', value: 'ezequiel'},
-        {label: 'Daniel', value: 'daniel'},
-        {label: 'Oséias', value: 'oseias'},
-        {label: 'Joel', value: 'joel'},
-        {label: 'Amós', value: 'amos'},
-        {label: 'Obadias', value: 'obadias'},
-        {label: 'Jonas', value: 'jonas'},
-        {label: 'Miquéias', value: 'miqueias'},
-        {label: 'Naum', value: 'naum'},
-        {label: 'Habacuque', value: 'habacuque'},
-        {label: 'Sofonias', value: 'sofonias'},
-        {label: 'Ageu', value: 'ageu'},
-        {label: 'Zacarias', value: 'zacarias'},
-        {label: 'Malaquias', value: 'malaquias'},
-        {label: 'Mateus', value: 'mateus'},
-        {label: 'Marcos', value: 'marcos'},
-        {label: 'Lucas', value: 'lucas'},
-        {label: 'João', value: 'joao'},
-      ]
-    }
+      selectedBook: null,
+      selectedChapter: null,
+      selectedVerse: null,
+      selectedVerseTo: null,
+      chapters: [], // Add appropriate data or fetch logic
+      verses: [], // Add appropriate data or fetch logic
+    };
   },
-  computed:{
+  computed: {
     ...mapState({
       versiculo: state => state.versiculo,
-
     }),
+  },
+  methods: {
+    ...mapActions(['fetchBooksAndChapters']),
 
   },
-  methods:{
-    ...mapActions(['fetchVersiculo', 'fetchImage', 'setImgToken']),
-
+  created() {
+    this.fetchBooksAndChapters();
   },
-  beforeCreate() {
-
-
-  }
-}
+};
 </script>
