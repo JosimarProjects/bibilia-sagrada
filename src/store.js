@@ -7,6 +7,7 @@ export default new Vuex.Store({
         loadingImage: false,
         showInput: true,
         loading: false,
+        books: [],
 
         versiculo: {
             book: '',
@@ -17,7 +18,8 @@ export default new Vuex.Store({
         }
     },
     getters: {
-        // Adicione getters se necessário
+
+
     },
     mutations: {
         setVersiculoText(state, payload) {
@@ -46,6 +48,9 @@ export default new Vuex.Store({
         },
         setLoading(state, payload) {
             state.loading = payload;
+        },
+        setBooks(state, payload) {
+            state.books = payload;
         }
     },
     actions: {
@@ -95,7 +100,6 @@ export default new Vuex.Store({
                         const error = await response.json();
                         throw new Error(`Error status:  ${response.status}`);
                     }
-                   // context.commit('setImgLoading', false);
 
 
                     const dados = await response.json();
@@ -126,6 +130,37 @@ export default new Vuex.Store({
             } else {
                 notifyError('Erro ao adicionar token!')
             }
+        },
+        fetchBooksAndChapters(context) {
+            fetch('https://www.abibliadigital.com.br/api/books/', {
+                method: 'GET', // Método HTTP utilizado na requisição
+                headers: {
+                    'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdHIiOiJUaHUgTWF5IDMwIDIwMjQgMTM6NTc6MzcgR01UKzAwMDAuNjY1ODgzODBmZjA0MWUwMDI4OGEyMTIzIiwiaWF0IjoxNzE3MDc3NDU3fQ.dlAtkD62fcaN6-mgtIGF9_DqoLXliYgLlsd-tIbuTYc`,
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => response.json())
+                .then(dados => {
+                    //getBooksAndChapters
+                    //getters
+                    //somente os livros
+                    const booksAndChapters = dados.map(book =>{
+                        return{
+                            name: book.name,
+                            chapters: book.chapters
+                        }
+                    })
+                    console.log(booksAndChapters)
+                //    context.commit('setBooks', books);
+
+
+                    //context.dispatch('getBooksAndChapters', dados);
+
+                })
+                .catch(error => {
+                    console.error('Erro na requisição:', error);
+                });
         }
+
     }
 });
