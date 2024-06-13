@@ -1,10 +1,54 @@
-<template>
+<template xmlns:q-card-section="http://www.w3.org/1999/html">
   <div>
     <IndexPage></IndexPage>
     <div>
-      <input-select :options="versiculo" label="Livro"></input-select>
-      <input-select :options="versiculo" label="Capitulo"></input-select>
-      <input-select :options="versiculo" label="Versiculo"></input-select>
+      <q-card>
+        <q-card-section>
+          <div class="q-gutter-md">
+            <q-select
+                v-model="selectedBook"
+                :options="versiculo"
+                label="Livro"
+                outlined
+                dense
+            ></q-select>
+            <q-select
+                v-model="selectedChapter"
+                :options="chapters"
+                label="Capítulo"
+                outlined
+                dense
+            ></q-select>
+            <q-select
+                v-model="selectedVerse"
+                :options="verses"
+                label="Do versículo "
+                outlined
+                dense
+            ></q-select>
+            <q-select
+                v-model="selectedVerseTo"
+                :options="verses"
+                label="Até Versículo"
+                outlined
+                dense
+            ></q-select>
+          </div>
+         <q-card-section>
+           <div>
+             <h1>rtte</h1>
+           </div>
+         </q-card-section>
+          <br><br>
+          <div  class="configured-label animate__animated animate__bounceIn">
+            <q-btn
+                color="primary"
+                label="Buscar Versículo Aleatório"
+                @click="addRandonVersiculo"
+            />
+          </div>
+        </q-card-section>
+      </q-card>
     </div>
   </div>
 
@@ -12,12 +56,11 @@
 
 <script>
 import IndexPage from "@/components/IndexPage.vue";
-import InputSelect from "@/components/forms/InputSelect.vue";
+import {mapActions, mapState} from "vuex";
 
 export default {
   name: 'ProcurarCapituloEVersiculo',
   components: {
-    InputSelect,
     IndexPage
   },
   data() {
@@ -68,6 +111,21 @@ export default {
         {label: 'João', value: 'joao'},
       ]
     }
+  },
+  computed:{
+    ...mapState({
+      versiculo: state => state.versiculo,
+
+    }),
+
+  },
+  methods:{
+    ...mapActions(['fetchVersiculo', 'fetchImage', 'setImgToken']),
+
+  },
+  beforeCreate() {
+
+
   }
 }
 </script>

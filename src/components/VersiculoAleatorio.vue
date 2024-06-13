@@ -58,10 +58,7 @@ export default {
   },
   data() {
     return {
-      loading: false,
-      loadingImage: false,
       openAiTokenInput: '',
-      showInput: true,
       animationClass: 'animate__bounceIn', // Classe de animação inicial
     };
   },
@@ -69,23 +66,23 @@ export default {
     ...mapState({
       versiculo: state => state.versiculo,
       openAiToken: state => state.openAiToken,
+      loadingImage: state => state.loadingImage,
+      showInput: state => state.showInput,
+      loading: state => state.loading,
     }),
   },
   methods: {
-    ...mapActions(['fetchVersiculo', 'fetchImage']),
-    ...mapMutations(['setOpenAiToken']),
+    ...mapActions(['fetchVersiculo', 'fetchImage', 'setImgToken']),
+    ...mapMutations(['setOpenAiToken', 'setImgLoading', 'setShowInput', 'setLoading']),
 
-    setToken() {
-      this.setOpenAiToken(this.openAiToken);
-    },
+
     async buscarVersiculo() {
       await this.fetchVersiculo();
     },
     addRandonVersiculo() {
-      this.loading = true;
+      this.setLoading(true);
       this.buscarVersiculo();
       if (this.openAiToken !== '') {
-        this.loadingImage = true;
         this.getImage();
       }
     },
@@ -93,35 +90,30 @@ export default {
       await this.fetchImage();
     },
     setImageToken(value) {
-      this.setOpenAiToken(value);
-      this.animateOut();
+      this.setImgToken(value);
+
+      if (this.openAiToken !== '') {
+        this.animateOut();
+      }
     },
     animateOut() {
       this.animationClass = 'animate__bounceOut'; // Classe de saída
       this.$refs.inputContainer.addEventListener('animationend', () => {
-        this.showInput = false;
+        this.setShowInput(false);
       }, {once: true});
     },
-    toggleInput() {
-      if (this.showInput) {
-        this.animationClass = 'animate__bounceIn'; // Classe de entrada
-      } else {
-        this.animationClass = 'animate__bounceOut'; // Classe de saída
-      }
-    }
+
   },
   watch: {
     versiculo: {
       handler() {
-        console.log('Versículo:', this.versiculo);
-        this.loading = false;
+        this.setLoading(false);
       },
       deep: true
     },
     "versiculo.image": {
       handler() {
-        console.log('Imagem:', this.versiculo.image);
-        this.loadingImage = false;
+        this.setImgLoading(false);
       },
       deep: true
     }
@@ -130,37 +122,6 @@ export default {
 </script>
 
 <style scoped>
-.loading-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(255, 255, 255, 0.8);
-  z-index: 9999;
-}
-
-.image-container {
-  position: relative;
-  width: 500px;
-  height: 500px;
-}
-
-.image-loading-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(255, 255, 255, 0.8);
-  z-index: 9999;
-}
 
 .input-container {
   display: flex;
@@ -173,7 +134,5 @@ export default {
   width: 60%;
 }
 
-.send-button {
-  margin-left: 10px;
-}
+
 </style>

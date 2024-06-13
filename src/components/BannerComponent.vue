@@ -3,8 +3,8 @@
     <q-banner rounded :class="$q.dark.isActive ? 'bg-grey-9' : 'bg-grey-2'">
       <nav>
         <router-link to="/">Home</router-link> |
-        <router-link to="/">Histórias Capitulo</router-link> |
-        <router-link to="/about">About</router-link>
+        <router-link to="/">Usar Bíblia</router-link> |
+        <router-link to="/versiculo-aleatorio">Versiculo Aleatório</router-link>
       </nav>
       <template v-slot:avatar>
         <div style="display: flex; flex-direction: column; align-items: center;">

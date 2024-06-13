@@ -1,14 +1,19 @@
 import Vuex from 'vuex';
+import {notifyError, notifySuccess} from "@/shared/helper/notify";
 
 export default new Vuex.Store({
     state: {
         openAiToken: '',
+        loadingImage: false,
+        showInput: true,
+        loading: false,
+
         versiculo: {
             book: '',
             chapter: '',
             number: '',
             text: '',
-            image: ''
+            image: '',
         }
     },
     getters: {
@@ -32,6 +37,15 @@ export default new Vuex.Store({
         },
         setOpenAiToken(state, payload) {
             state.openAiToken = payload;
+        },
+        setImgLoading(state, payload) {
+            state.loadingImage = payload;
+        },
+        setShowInput(state, payload) {
+            state.showInput = payload;
+        },
+        setLoading(state, payload) {
+            state.loading = payload;
         }
     },
     actions: {
@@ -58,6 +72,7 @@ export default new Vuex.Store({
         },
 
         fetchImage(context) {
+            context.commit('setImgLoading', true);
 
             const { text, book, chapter, number } = context.state.versiculo;
             const prompt = `Crie uma imagem visualmente detalhada que represente o versículo da Bíblia ${text} do livro de ${book}, capítulo ${chapter}, versículo ${number}. A imagem deve ser exatamente o momento como se estivesse ali como se fosse uma foto do ocorrido.`;
@@ -77,14 +92,40 @@ export default new Vuex.Store({
             })
                 .then(async response => {
                     if (!response.ok) {
-                        throw new Error(`Erro na requisição: ${response.statusText}`);
+                        const error = await response.json();
+                        throw new Error(`Error status:  ${response.status}`);
                     }
+                   // context.commit('setImgLoading', false);
+
+
                     const dados = await response.json();
                     context.commit('setImage', dados.data[0].url);
                 })
                 .catch(error => {
-                    console.error('Erro na requisição:', error);
+                    context.commit('setImgLoading', false);
+
+                    if (error.message == 'Error status:  401'){
+                        notifyError('Token inválido, por favor verifique o token informado!')
+                        context.commit('setShowInput', true);
+                        context.commit('setOpenAiToken', '');
+                    }else {
+                        notifyError('Erro ao buscar imagem, tente novamente!')
+                    }
                 });
+        },
+        setImgToken(context, payload) {
+
+            context.commit('setOpenAiToken', payload);
+            //verificar se o token foi setado
+            if (context.state.openAiToken !== '') {
+                notifySuccess('Token adicionado com sucesso!')
+                context.commit('setShowInput', false);
+            } else if (context.state.openAiToken == '') {
+                notifyError('Token precisa ser preenchido!')
+
+            } else {
+                notifyError('Erro ao adicionar token!')
+            }
         }
     }
 });
