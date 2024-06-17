@@ -7,7 +7,7 @@ export default new Vuex.Store({
         loadingImage: false,
         showInput: true,
         loading: false,
-        books: [],
+        booksAndChapters: [],
 
         versiculo: {
             book: '',
@@ -18,8 +18,13 @@ export default new Vuex.Store({
         }
     },
     getters: {
+        booksAndChapters: state => state.booksAndChapters,
+        chaptersByBook: (state) => (bookName) => {
+            const book = state.booksAndChapters.find(book => book.name === bookName);
+            const totalChapters = book ? book.chapters : [];
+            return Array.from({length: totalChapters}, (v, k) => k + 1);
 
-
+        }
     },
     mutations: {
         setVersiculoText(state, payload) {
@@ -49,8 +54,9 @@ export default new Vuex.Store({
         setLoading(state, payload) {
             state.loading = payload;
         },
-        setBooks(state, payload) {
-            state.books = payload;
+        setBooksAndChapters(state, payload) {
+            state.booksAndChapters = payload;
+            console.log('state.booksAndChapters', state.booksAndChapters);
         }
     },
     actions: {
@@ -150,8 +156,7 @@ export default new Vuex.Store({
                             chapters: book.chapters
                         }
                     })
-                    console.log(booksAndChapters)
-                //    context.commit('setBooks', books);
+                   context.commit('setBooksAndChapters', booksAndChapters);
 
 
                     //context.dispatch('getBooksAndChapters', dados);

@@ -7,7 +7,7 @@
           <div class="q-gutter-md">
             <q-select
                 v-model="selectedBook"
-                :options="versiculo"
+                :options="booksAndChapters.map(book => book.name)"
                 label="Livro"
                 outlined
                 dense
@@ -36,7 +36,7 @@
           </div>
           <q-card-section>
             <div>
-              <h1>rtte</h1>
+              <h1>{{chapters }}</h1>
             </div>
           </q-card-section>
           <br><br>
@@ -55,7 +55,7 @@
 
 <script>
 import IndexPage from "@/components/IndexPage.vue";
-import { mapActions, mapState } from "vuex";
+import {mapActions, mapGetters, mapState} from "vuex";
 
 export default {
   name: 'ProcurarCapituloEVersiculo',
@@ -68,21 +68,30 @@ export default {
       selectedChapter: null,
       selectedVerse: null,
       selectedVerseTo: null,
-      chapters: [], // Add appropriate data or fetch logic
-      verses: [], // Add appropriate data or fetch logic
+      //chapters: [], // Adicione os dados apropriados ou a lógica de busca
+      verses: [],
     };
   },
   computed: {
     ...mapState({
-      versiculo: state => state.versiculo,
+      booksAndChapters: state => state.booksAndChapters,
     }),
+    ...mapGetters({
+      getChapters: "chaptersByBook"
+    }),
+    chapters() {
+     return this.getChapters(this.selectedBook);
+    },
   },
   methods: {
     ...mapActions(['fetchBooksAndChapters']),
 
+    setBooks() {
+      this.fetchBooksAndChapters();
+    },
   },
   created() {
-    this.fetchBooksAndChapters();
+    this.setBooks();
   },
 };
 </script>
