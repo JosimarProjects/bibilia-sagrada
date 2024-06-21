@@ -8,6 +8,7 @@ export default new Vuex.Store({
         showInput: true,
         loading: false,
         booksAndChapters: [],
+        history: {},
 
         versiculo: {
             book: '',
@@ -23,6 +24,18 @@ export default new Vuex.Store({
             const book = state.booksAndChapters.find(book => book.name === bookName);
             const totalChapters = book ? book.chapters : [];
             return Array.from({length: totalChapters}, (v, k) => k + 1);
+        },
+        versesByChapter: (state) => {
+            if (state.history.chapter) {
+                const verses = state.history.chapter.verses;
+                return Array.from({length: verses}, (v, k) => k + 1);
+            }
+        },
+        chapterByVerse: (state) => (verse, verseTo) => {
+            //console.log('state.history', state.history.verses);
+            const verses = state.history.verses;
+            const versesFiltered = verses.filter(vers => vers.number >= verse && vers.number <= verseTo);
+            return ('versesFiltered', versesFiltered);
 
         }
     },
@@ -56,8 +69,12 @@ export default new Vuex.Store({
         },
         setBooksAndChapters(state, payload) {
             state.booksAndChapters = payload;
-            console.log('state.booksAndChapters', state.booksAndChapters);
+        },
+        setHistory(state, payload) {
+            state.history = payload;
+            console.log('history', state.history);
         }
+
     },
     actions: {
         fetchVersiculo(context) {
@@ -153,7 +170,8 @@ export default new Vuex.Store({
                     const booksAndChapters = dados.map(book =>{
                         return{
                             name: book.name,
-                            chapters: book.chapters
+                            chapters: book.chapters,
+                            abbrev: book.abbrev
                         }
                     })
                    context.commit('setBooksAndChapters', booksAndChapters);
@@ -164,6 +182,29 @@ export default new Vuex.Store({
                 })
                 .catch(error => {
                     console.error('Erro na requisição:', error);
+                });
+        },
+        fetchBookChapter(context, {abbrev, chapter}) {
+            fetch(`https://www.abibliadigital.com.br/api/verses/nvi/${abbrev}/${chapter}`, {
+                method: 'GET', // Método HTTP utilizado na requisição
+                headers: {
+                    'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdHIiOiJUaHUgTWF5IDMwIDIwMjQgMTM6NTc6MzcgR01UKzAwMDAuNjY1ODgzODBmZjA0MWUwMDI4OGEyMTIzIiwiaWF0IjoxNzE3MDc3NDU3fQ.dlAtkD62fcaN6-mgtIGF9_DqoLXliYgLlsd-tIbuTYc`,
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => response.json())
+                .then(dados => {
+                    context.commit('setHistory', dados);
+
+                    /* context.commit('setVersiculoText', dados[0].text);
+                     context.commit('setVersiculoBook', dados[0].book.name);
+                     context.commit('setVersiculoChapter', dados[0].chapter);
+                     context.commit('setVersiculoNumber', dados[0].number);*/
+                    //  context.dispatch('fetchImage');
+
+                })
+                .catch(error => {
+                    console.error('Erro na requisição:', error); // Tratamento de erro da requisição
                 });
         }
 
