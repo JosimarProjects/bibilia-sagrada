@@ -18,6 +18,7 @@
                 label="Capítulo"
                 outlined
                 dense
+                :disable = "!selectedBook"
             ></q-select>
             <q-select
                 v-model="selectedVerse"
@@ -25,13 +26,15 @@
                 label="Do versículo "
                 outlined
                 dense
+                :disable="!selectedChapter"
             ></q-select>
             <q-select
                 v-model="selectedVerseTo"
-                :options="getVerses"
+                :options="listVersesTo"
                 label="Até Versículo"
                 outlined
                 dense
+                :disable="!selectedVerse"
             ></q-select>
           </div>
 
@@ -78,6 +81,8 @@ export default {
       selectedChapter: null,
       selectedVerse: null,
       selectedVerseTo: null,
+      listVersesTo:[],
+
       //chapters: [], // Adicione os dados apropriados ou a lógica de busca
       verses: [],
       historySelected: '',
@@ -107,6 +112,18 @@ export default {
     setHistorySelected(history) {
       this.historySelected = history;
     },
+    getVerseTo(selectedVerse) {
+      let verses = [];
+      for (let i = selectedVerse; i <= this.getVerses.length; i++) {
+        if (i <= selectedVerse){
+          continue;
+        }
+        verses.push(i);
+      }
+     this.listVersesTo = verses;
+
+
+    },
   },
   watch: {
     async selectedChapter() {
@@ -117,6 +134,9 @@ export default {
     },
     async selectedVerseTo() {
       this.setHistorySelected(this.getHistory(this.selectedVerse, this.selectedVerseTo));
+    },
+    async selectedVerse() {
+      this.getVerseTo(this.selectedVerse);
     },
     /*history() {
        this.getVerses;
@@ -132,6 +152,11 @@ export default {
   max-width: 800px;
   margin: 0 auto;
   padding: 20px;
+  background-image: url('@/assets/bibleback.webp'); /* Certifique-se de salvar a imagem com este nome */
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: center;
 }
 
 .card {
@@ -161,7 +186,7 @@ export default {
 
 .verse-container p {
   font-style: italic; /* Estilo de texto antigo */
-  font-size: 23px;
+  font-size: 18px;
   text-indent: 20px; /* Recuo para estilo de parágrafo */
   line-height: 1.6; /* Altura da linha para melhor legibilidade */
   background-color: rgba(255, 255, 255, 0.7); /* Fundo semitransparente para destacar o texto */
